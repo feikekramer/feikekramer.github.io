@@ -1,0 +1,97 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Load a basic WebMap | Sample | ArcGIS API for JavaScript 4.20</title>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.20/esri/themes/light/main.css" />
+
+    <script src="https://js.arcgis.com/4.20/"></script>
+
+    <script>
+        // Load the Map and MapView modules
+        require(["esri/Basemap", "esri/layers/TileLayer", "esri/Map", "esri/views/MapView", "esri/geometry/Point", "esri/geometry/SpatialReference"],
+            function (Basemap, TileLayer, Map, MapView, Point, SpatialReference) {
+
+                let layer = new TileLayer({
+                    url: "https://services.arcgisonline.nl/arcgis/rest/services/Basiskaarten/Topo/MapServer"
+                });
+                // Add layer to map
+
+                let basemap = new Basemap({
+                    baseLayers: [
+                        layer
+                    ],
+                });
+
+                // Create a Map instance
+                const myMap = new Map({
+                    basemap: basemap
+                });
+
+                // Create a MapView instance (for 2D viewing) and reference the map instance
+                const view = new MapView({
+                    map: myMap,
+                    container: "viewDiv"
+                });
+
+
+                view.ui.add(["startButton"], "top-right");
+                var printerButton = document.getElementById("startButton");
+                printerButton.addEventListener("click", browseAction);
+
+                function browseAction(evt) {
+                    test()
+                }
+
+                function test() {
+
+                    //var x = Math.floor(Math.random() * 150000);
+                    //var y = Math.floor(Math.random() * 150000) + 150000;
+
+                    const p = new Point({
+                        x: Math.floor(Math.random() * 280000),
+                        y: Math.floor(Math.random() * 325000) + 300000,
+                        spatialReference: {
+                            wkid: 28992
+                        }
+                    });
+                    var z = Math.floor(Math.random() * 16);
+                    console.log(p.x, p.y, z);
+
+                    view.goTo({
+                        center: p,
+                        zoom: z
+                    });
+
+                    setTimeout(function () { test(); }, 1000);
+
+                }
+
+            });
+
+
+    </script>
+
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+    <div id="startButton" class="esri-component esri-widget--button esri-widget" role="button">
+        <span title="Start navigeren" id="custom-printer" class="esri-icon-play"></span>
+    </div>
+</body>
+
+</html>
